@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -19,7 +19,10 @@ public class Game{
     
     StateMachine stateMachine;
 
-    Game() {
+
+
+
+    Game() throws IOException, FontFormatException {
         gameFrame = new JFrame("Mini Golf");   
         gamePanel = new GamePanel();          
         keyListener = new MyKeyListener();
@@ -31,7 +34,7 @@ public class Game{
         mouseX = 0;
         mouseY = 0;
 
-        stateMachine = new StateMachine();
+        stateMachine = new StateMachine();        
     }
     // set up the game window
     public void setUp() {
@@ -42,7 +45,7 @@ public class Game{
         gamePanel.addMouseListener(mouseListener);
         gamePanel.addMouseMotionListener(mouseMotionListener);        
         gameFrame.add(gamePanel); 
-        gameFrame.setVisible(true);  
+        gameFrame.setVisible(true);
     }
     // main game loop
     public void runGameLoop() {
@@ -80,7 +83,7 @@ public class Game{
         }
         public void mouseReleased(MouseEvent e) {
             if (e.getButton() == 1) {
-                mouseDown = true;
+                mouseDown = false;
             }
         }
         public void mouseEntered(MouseEvent e) {
@@ -95,6 +98,8 @@ public class Game{
             mouseY = e.getY();
         }
         public void mouseDragged(MouseEvent e) {
+            mouseX = e.getX();
+            mouseY = e.getY();
         }         
     }    
     //draw everything
@@ -107,7 +112,8 @@ public class Game{
         @Override
         public void paintComponent(Graphics g) { 
             super.paintComponent(g); //required
-            //draw game objects here
+            
+            stateMachine.draw(g);
         }    
     }    
 }
