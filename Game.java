@@ -19,9 +19,6 @@ public class Game{
     
     StateMachine stateMachine;
 
-
-
-
     Game() throws IOException, FontFormatException {
         gameFrame = new JFrame("Mini Golf");   
         gamePanel = new GamePanel();          
