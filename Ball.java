@@ -1,5 +1,7 @@
 import java.awt.*;
 public class Ball implements Drawable {
+GameMenu gameMenu;
+
     int x;
     int y;
     int radius;
@@ -7,7 +9,8 @@ public class Ball implements Drawable {
     // Tracked in degrees
     double angle;
     double speed;
-    Ball(int x, int y) {
+    Ball(GameMenu gameMenu, int x, int y) {
+        this.gameMenu = gameMenu;
         this.x = x;
         this.y = y;
         this.radius = Const.BALL_RADIUS;
@@ -20,10 +23,23 @@ public class Ball implements Drawable {
         g.fillOval(this.x, this.y, this.radius, this.radius);
     }
     public void update() {
-
+        
     }
     private boolean collides(Rectangle other) {
-        
+        // Calculate the distance between the centers of each object
+        double distX = Math.abs(this.x - other.x - other.width / 2);
+        double distY = Math.abs(this.y - other.y - other.height / 2);
+        double distSq = Math.pow(distX - other.width / 2, 2) + Math.pow(distY - other.height / 2, 2);
+        // If the distance between the centers is greater than the radii of both shapes
+        if (distX > other.width / 2 + this.radius || distY > other.height / 2 + this.radius) {
+            return false;
+        }
+        // If the distance centers is smaller or equal to the width/height of the rectangle
+        else if (distX <= other.width / 2 || distY <= other.height / 2) {
+            return true;
+        }
+        // Check if the distance between the corner of the rectangle and the center of the circle is smaller or equal to the radius of the circle
+        return distSq <= Math.pow(this.radius, 2);
     }
     public void setAngle(double angle) {
         this.angle = angle;
