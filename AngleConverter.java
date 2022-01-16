@@ -1,6 +1,6 @@
 public class AngleConverter {
     static double pi = Math.PI;
-    private AngleConverter() {};
+    private AngleConverter() {}
     public static double radians(double degrees) {
         return degrees * pi / 180;
     }

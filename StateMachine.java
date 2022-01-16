@@ -1,5 +1,6 @@
 import java.util.Set;
 import java.awt.*;
+import java.io.IOException;
 
 public class StateMachine implements Drawable {
     StartMenu startMenu;
@@ -12,11 +13,8 @@ public class StateMachine implements Drawable {
     boolean pause;
     boolean select;
 
-    public Lambda toggleStart;
-    public Lambda toggleGame;
-    public Lambda togglePause;
-    public Lambda toggleSelect;
-    StateMachine() {
+    int difficulty;
+    StateMachine() throws IOException, FontFormatException {
         startMenu = new StartMenu(this);
         gameMenu = new GameMenu(this);
         pauseMenu = new PauseMenu(this);
@@ -27,10 +25,7 @@ public class StateMachine implements Drawable {
         pause = false;
         select = false;
 
-        toggleStart = () -> start = !start;
-        toggleGame = () -> game = !game;
-        togglePause = () -> pause = !pause;
-        toggleSelect = () -> select = !select;
+        difficulty = 0;
     }
     public void draw(Graphics g) {
         if (start) {
@@ -60,5 +55,20 @@ public class StateMachine implements Drawable {
         else if (select) {
             selectMenu.update(keysPressed, mouseDown, mouseX, mouseY);
         }
+    }
+    public void toggleStart() {
+        start = !start;
+    }
+    public void toggleGame() {
+        game = !game;
+    }
+    public void togglePause() {
+        pause = !pause;
+    }
+    public void toggleSelect() {
+        select = !select;
+    }
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 }

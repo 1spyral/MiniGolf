@@ -3,7 +3,7 @@ import java.io.File;
 import java.awt.*;
 // Class for loading and storing fonts
 public class FontLoader {
-    private static final String FONT_PATH = "ComicSansMS3.ttf";
+    private static final String FONT_PATH = "ComicMono.ttf";
     private File FONT_FILE;
     private Font FONT;
     // Used for small text

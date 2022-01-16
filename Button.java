@@ -4,17 +4,19 @@ import java.io.IOException;
 public class Button extends Rectangle implements Drawable {
     Color color;
     String text;
-    Lambda method;
+    StateLambda method;
+    StateMachine stateMachine;
 
     Font font;
     boolean held;
-    Button(int x, int y, int width, int height, String text, Color color, Lambda method) throws IOException, FontFormatException {
+    Button(int x, int y, int width, int height, String text, Color color, StateLambda method, StateMachine stateMachine) throws IOException, FontFormatException {
         super(x, y, width, height);
         this.text = text;
         this.color = color;
         this.method = method;
+        this.stateMachine = stateMachine;
 
-        this.font = (new FontLoader()).medium;
+        this.font = (new FontLoader()).title;
     }
     public void draw(Graphics g) {
         // Draw the button
@@ -23,7 +25,7 @@ public class Button extends Rectangle implements Drawable {
         // Draw the button text
         g.setColor(Color.BLACK);
         g.setFont(this.font);
-        g.drawString(this.text, this.x + 50, this.y + 50);
+        g.drawString(this.text, this.x + this.width / 2 - g.getFontMetrics().charWidth('a') * this.text.length() / 2, this.y + this.height / 2);
     }
     public void update(boolean mouseDown, int mouseX, int mouseY) {
         // Checks if the user is holding down the button
@@ -33,7 +35,7 @@ public class Button extends Rectangle implements Drawable {
         // When the user lets go of the button
         else if (!mouseDown && this.held && this.collides(mouseX, mouseY)) {
             this.held = false;
-            this.method.call();
+            this.method.call(this.stateMachine);
         }
         // If the user moves their mouse away while holding down the button
         else if (mouseDown && this.held && !this.collides(mouseX, mouseY)) {
