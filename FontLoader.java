@@ -15,8 +15,8 @@ public class FontLoader {
     FontLoader() throws IOException, FontFormatException {
         FONT_FILE = new File(FONT_PATH);
         FONT = Font.createFont(Font.TRUETYPE_FONT, FONT_FILE);
-        small = FONT.deriveFont(12);
-        medium = FONT.deriveFont(Font.BOLD, 18);
-        title = FONT.deriveFont(Font.BOLD | Font.ITALIC , 30);
+        small = FONT.deriveFont(18);
+        medium = FONT.deriveFont(Font.BOLD, 30);
+        title = FONT.deriveFont(Font.BOLD | Font.ITALIC , 60);
     }
 }

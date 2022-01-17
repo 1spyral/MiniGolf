@@ -16,7 +16,7 @@ public class Button extends Rectangle implements Drawable {
         this.method = method;
         this.stateMachine = stateMachine;
 
-        this.font = (new FontLoader()).title;
+        this.font = (new FontLoader()).medium;
     }
     public void draw(Graphics g) {
         // Draw the button
