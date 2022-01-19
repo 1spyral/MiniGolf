@@ -20,7 +20,8 @@ GameMenu gameMenu;
     }
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillOval(this.x, this.y, this.radius, this.radius);
+        // fillOval asks for top left corner of the circle
+        g.fillOval(this.x - this.radius / 2, this.y - this.radius / 2, this.radius, this.radius);
     }
     public void update() {
         

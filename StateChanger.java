@@ -1,5 +1,3 @@
-import java.beans.Statement;
-
 public class StateChanger {
     public static StateLambda startToSelect = (StateMachine stateMachine) -> {
         stateMachine.toggleStart();
@@ -8,6 +6,7 @@ public class StateChanger {
     public static StateLambda selectToGame = (StateMachine stateMachine) -> {
         stateMachine.toggleSelect();
         stateMachine.toggleGame();
+        stateMachine.buildGame();
     };
     public static StateLambda easy = (StateMachine stateMachine) -> {
         stateMachine.setDifficulty(1);
