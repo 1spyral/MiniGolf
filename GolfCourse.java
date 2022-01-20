@@ -5,6 +5,7 @@ public class GolfCourse extends Polygon implements Drawable {
     }
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
+        ((Graphics2D)g).setStroke(new BasicStroke(10));
         g.drawPolygon(this);
     }
 }

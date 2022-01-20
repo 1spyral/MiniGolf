@@ -7,9 +7,16 @@ public class Ramp extends Polygon implements Drawable {
         this.direction = direction;
     }
     public void draw(Graphics g) {
+        g.setColor(new Color(0, 100, 0));
         g.fillPolygon(this);
-        // Display direction here
+        if (direction == 1) {
 
-        //
+        } else if (direction == 2) {
+
+        } else if (direction == 3) {
+
+        } else if (direction == 4) {
+
+        }
     }
 }

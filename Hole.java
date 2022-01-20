@@ -11,6 +11,6 @@ public class Hole implements Drawable {
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
         // fillOval asks for top left corner of the circle
-        g.fillOval(this.x - radius / 2, this.y - radius / 2, this.radius, this.radius);
+        g.fillOval(this.x - radius, this.y - radius, this.radius * 2, this.radius * 2);
     }
 }
