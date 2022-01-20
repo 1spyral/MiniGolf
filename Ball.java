@@ -20,11 +20,11 @@ GameMenu gameMenu;
     }
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
-        // fillOval asks for top left cornfillovaler of the circle
+        // fillOval asks for top left corner of the circle
         g.fillOval(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
     }
     public void update() {
-        if (speed > 0) {
+        if (this.speed > 0) {
             
         }
     }
