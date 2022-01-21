@@ -1,3 +1,5 @@
+import java.beans.Statement;
+
 public class StateChanger {
     public static StateLambda startToSelect = (StateMachine stateMachine) -> {
         stateMachine.toggleStart();
@@ -19,6 +21,14 @@ public class StateChanger {
     public static StateLambda hard = (StateMachine stateMachine) -> {
         stateMachine.setDifficulty(3);
         selectToGame.call(stateMachine);
+    };
+    public static StateLambda pause = (StateMachine stateMachine) -> {
+        stateMachine.toggleGame();
+        stateMachine.togglePause();
+    };
+    public static StateLambda pauseToStart = (StateMachine stateMachine) -> {
+        stateMachine.togglePause();
+        stateMachine.toggleStart();
     };
     private StateChanger() {}
 }

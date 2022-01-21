@@ -16,7 +16,7 @@ public class StartMenu extends Menu {
         g.setColor(Color.GREEN);
         g.fillRect(0, 0, Const.WIDTH, Const.HEIGHT);
         startButton.draw(g);
-        g.drawImage(title, 342, 100, new DummyImageObserver());
+        g.drawImage(title, 342, 100, null);
     }
     public void update(Set<Integer> keysPressed, boolean mouseDown, int mouseX, int mouseY) {
         startButton.update(mouseDown, mouseX, mouseY);

@@ -42,6 +42,7 @@ public class Game{
         gamePanel.addMouseListener(mouseListener);
         gamePanel.addMouseMotionListener(mouseMotionListener);        
         gameFrame.add(gamePanel); 
+        gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
     }
     // main game loop
