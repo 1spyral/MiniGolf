@@ -72,6 +72,8 @@ public class StateMachine implements Drawable {
         this.difficulty = difficulty;
     }
     public void buildGame() {
-        gameMenu.build(difficulty);
+        try {
+            gameMenu.build(difficulty);
+        } catch (Exception e) {};
     }
 }

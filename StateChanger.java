@@ -1,4 +1,3 @@
-import java.beans.Statement;
 
 public class StateChanger {
     public static StateLambda startToSelect = (StateMachine stateMachine) -> {
