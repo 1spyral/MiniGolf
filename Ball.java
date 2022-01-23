@@ -23,8 +23,8 @@ GameMenu gameMenu;
         this.y = y;
         this.radius = Const.BALL_RADIUS;
 
-        this.angle = 0;
-        this.speed = 1;
+        this.angle = 90;
+        this.speed = 50;
 
         this.moving = false;
         this.spaceHeld = false;
@@ -35,53 +35,128 @@ GameMenu gameMenu;
         g.setColor(Color.WHITE);
         // fillOval asks for top left corner of the circle
         g.fillOval((int)this.x - this.radius, (int)this.y - this.radius, this.radius * 2, this.radius * 2);
+        g.setColor(Color.black);
+        ((Graphics2D)g).setStroke(new BasicStroke(1));
+        g.drawOval((int)this.x - this.radius, (int)this.y - this.radius, this.radius * 2, this.radius * 2);
         g.setFont(this.font);
         g.setColor(Color.BLACK);
         g.drawString("Angle: " + this.angle, 1000, 150);
         g.drawString("Velocity: " + this.speed + "%", 1000, 550);
+        if (!this.moving) {
+            double velocity = this.speed;
+            double moveX = Math.cos(AngleConverter.radians(this.angle)) * velocity + this.x;
+            double moveY = -Math.sin(AngleConverter.radians(this.angle)) * velocity + this.y;
+            g.setColor(Color.white);
+            ((Graphics2D)g).setStroke(new BasicStroke(2));
+            g.drawLine((int)this.x, (int)this.y, (int)moveX, (int)moveY);
+        }
     }
     public void update(Set<Integer> keysPressed, boolean mouseDown, int mouseX, int mouseY) {
         if (moving) {
-            double velocity = this.speed / 10;
-            boolean hitWall = false;
-            while (true) {            
+            double velocity = this.speed / 5;
+            while (true) {   
+                boolean hitWall = false;
                 double moveX = Math.cos(AngleConverter.radians(this.angle)) * velocity + this.x;
-                double moveY = Math.sin(AngleConverter.radians(this.angle)) * velocity + this.x;
+                double moveY = -Math.sin(AngleConverter.radians(this.angle)) * velocity + this.y;
                 // Slope
                 double m = (moveY - this.y) / (moveX - this.x);
-                // Y-intercept
-                double b = this.y - m * this.x;
-                for (int i = 0; i < this.gameMenu.golfCourse.npoints; i++) {
-                    // Slope of the wall segment
-                    double wallM;
-                    // Y-intercept of the wall segment
-                    double wallB;
-                    if (i == 0) {
-                        System.out.println((this.gameMenu.golfCourse.xpoints[i] - this.gameMenu.golfCourse.xpoints[this.gameMenu.golfCourse.npoints - 1]));
-                        wallM = (this.gameMenu.golfCourse.ypoints[i] - this.gameMenu.golfCourse.ypoints[this.gameMenu.golfCourse.npoints - 1]) / (this.gameMenu.golfCourse.xpoints[i] - this.gameMenu.golfCourse.xpoints[this.gameMenu.golfCourse.npoints - 1]);
-                        wallB = this.gameMenu.golfCourse.ypoints[i] - wallM * this.gameMenu.golfCourse.xpoints[i];
-                    } else {
-                        wallM = (this.gameMenu.golfCourse.ypoints[i] - this.gameMenu.golfCourse.ypoints[i - 1]) / (this.gameMenu.golfCourse.xpoints[i] - this.gameMenu.golfCourse.xpoints[i - 1]);
-                        wallB = this.gameMenu.golfCourse.ypoints[i] - wallM * this.gameMenu.golfCourse.xpoints[i];
+                // Undefined slope
+                boolean undefinedM = Double.isInfinite(m);
+                for (int[][] wall: this.gameMenu.golfCourse.getSegments()) {
+                    double wallM = ((double)wall[0][1] - wall[1][1]) / (wall[0][0] - wall[1][0]);
+                    // Undefined wall slope
+                    boolean undefinedWall = Double.isInfinite(wallM);
+                    if ((undefinedM && undefinedWall) || (m == wallM)) {
+                        continue;
                     }
-                    // Where the lines meet
-                    double meetX = (wallB - b) / (m - wallM);
-                    double meetY = m * meetX + b;
-                    if (meetX >= Math.min(this.x, moveX) && meetX <= Math.max(this.x, moveX) && meetY >= Math.min(this.y, moveY) && meetY <= Math.max(this.y, moveY)) {
-                        velocity *= (1 - Math.abs(meetX - x) / Math.abs(moveX - x));
+                    double meetX;
+                    double meetY;
+                    double b;
+                    double wallB;
+                    if (undefinedM) {
+                        meetX = this.x;
+                        wallB = wall[0][1] - wallM * wall[0][0];
+                        meetY = wallM * meetX + wallB;
+                    } else if (undefinedWall) {
+                        meetX = wall[0][0];
+                        b = this.y - m * this.x;
+                        meetY = m * meetX + b;
+                    } else {
+                        b = this.y - m * this.x;
+                        wallB = wall[0][1] - wallM * wall[0][0];
+                        meetX = (wallB - b) / (m - wallM);
+                        meetY = m * meetX + b;
+                    }
+                    if (meetX >= Math.min(this.x, moveX) &&
+                    meetX <= Math.max(this.x, moveX) &&
+                    meetY >= Math.min(this.y, moveY) &&
+                    meetY <= Math.max(this.y, moveY) &&
+                    meetX >= Math.min(wall[0][0], wall[1][0]) && 
+                    meetX <= Math.max(wall[0][0], wall[1][0]) && 
+                    meetY >= Math.min(wall[0][1], wall[1][1]) && 
+                    meetY <= Math.max(wall[0][1], wall[1][1]) &&
+                    (this.x != meetX || this.y != meetY)) {
+                        double x1 = wall[0][0] - meetX;
+                        double y1 = wall[0][1] - meetY;
+                        double x2 = wall[1][0] - meetX;
+                        double y2 = wall[1][1] - meetY;
+                        double raa1 = AngleConverter.degrees((Math.atan2(y1, x1))) % 180;
+                        double raa2 = AngleConverter.degrees((Math.atan2(y2, x2))) % 180;
+                        double wall1;
+                        double wall2;
+                        if (raa1 <= 0) {
+                            wall1 = 180 - raa1;
+                        } else {
+                            wall1 = raa1;
+                        }
+                        if (raa2 <= 0) {
+                            wall2 = 180 - raa2;
+                        } else {
+                            wall2 = raa2;
+                        }
+                        double oldAngle = this.angle;
+                        // If the wall is horizontal
+                        if (y1 == y2) {
+                            if (this.angle <= 90) {
+                                raa1 = this.angle;
+                                this.angle = 360 - raa1;
+                            } else if (this.angle <= 180) {
+                                raa1 = 180 - this.angle;
+                                this.angle = 180 + raa1;
+                            } else if (this.angle <= 270) {
+                                raa1 = this.angle - 180;
+                                this.angle = 180 - raa1;
+                            } else {
+                                raa1 = 360 - this.angle;
+                                this.angle = raa1;
+                            }
+                        } else {
+                            if (this.angle < Math.max(wall1, wall2) && this.angle > Math.min(wall1, wall2)) {
+                                this.angle = 360 - Math.min(wall1, wall2) - Math.abs(this.angle - Math.max(wall1, wall2));
+                            } else {
+                                this.angle = 360 - Math.min(wall1, wall2) + Math.abs(this.angle - Math.max(wall1, wall2));
+                            }
+                            if (oldAngle == this.angle) {
+                                raa1 = this.angle - 180;
+                                this.angle = 540 - this.angle;
+                            }
+                        }
                         this.x = meetX;
                         this.y = meetY;
                         hitWall = true;
-                        break;
                     }
                 }
                 if (!hitWall) {
                     this.x = moveX;
-                    this.y = moveY;
+                    this.y = moveY; 
                     break;
                 }
-            }  
-            moving = false;
+            }
+            this.speed--;
+            if (this.speed <= 0) {
+                this.speed = 0;
+                this.moving = false;
+            }
         } else {
             if (keysPressed.contains(KeyEvent.VK_UP)) {
                 speed++;
@@ -91,14 +166,14 @@ GameMenu gameMenu;
                 speed--;
                 speed = Math.max(speed, 1);
             }
-            if (keysPressed.contains(KeyEvent.VK_LEFT)) {
+            if (keysPressed.contains(KeyEvent.VK_RIGHT)) {
                 angle--;
                 if (angle < 0) {
                     angle += 360;
                 }
                 angle %= 360;
             }
-            if (keysPressed.contains(KeyEvent.VK_RIGHT)) {
+            if (keysPressed.contains(KeyEvent.VK_LEFT)) {
                 angle++;
                 angle %= 360;
             }
@@ -125,11 +200,5 @@ GameMenu gameMenu;
         }
         // Check if the distance between the corner of the rectangle and the center of the circle is smaller or equal to the radius of the circle
         return distSq <= Math.pow(this.radius, 2);
-    }
-    public void setAngle(double angle) {
-        this.angle = angle;
-    }
-    public void setSpeed(double speed) {
-        this.speed = speed;
     }
 }

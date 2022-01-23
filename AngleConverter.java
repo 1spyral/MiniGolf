@@ -5,6 +5,6 @@ public class AngleConverter {
         return degrees * pi / 180;
     }
     public static double degrees(double radians) {
-        return radians * 180 / pi;
+        return (radians * 180 / pi) % 360;
     }
 }
