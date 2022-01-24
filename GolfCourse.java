@@ -1,13 +1,20 @@
 import java.awt.*;
+
+// Class for storing the walls of the golf course
 public class GolfCourse extends Polygon implements Drawable {
     GolfCourse(int[] xpoints, int[] ypoints, int npoints) {
         super(xpoints, ypoints, npoints);
     }
     public void draw(Graphics g) {
+        g.setColor(Color.green);
+        // Draw the golf course
+        g.fillPolygon(this);
         g.setColor(Color.WHITE);
         ((Graphics2D)g).setStroke(new BasicStroke(10));
+        // Draw the walls
         g.drawPolygon(this);
     }
+    // Method to access a list of wall segments
     public int[][][] getSegments() {
         int[][][] segments = new int[npoints][2][2];
         for (int i = 0; i < npoints; i++) {

@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.util.Set;
+
+// Abstract class for menu states
 public abstract class Menu implements Drawable {
+    // The StateMachine that the menu belongs to
     StateMachine stateMachine;
     Menu(StateMachine stateMachine) {
         this.stateMachine = stateMachine;
